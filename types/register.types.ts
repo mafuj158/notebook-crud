@@ -21,7 +21,7 @@ export interface RegisterSuccessResponse {
 export interface RegisterErrorResponse {
     success: boolean;
     message: string;
-    errors: ValidationErrorItem[];
+    errors?: ValidationErrorItem[];
     status: number;
 }
 

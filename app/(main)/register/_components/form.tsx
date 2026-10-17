@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheck } from "react-icons/fi";
+import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { message } from "antd";
 import CommonFieldset from "@/components/fieldset";
 import { RegisterPayload } from "@/types";
 import { useRegister } from "@/hooks/register.hook";
 
 const Form = () => {
     const router = useRouter();
-    const [generalError, setGeneralError] = useState<string>("");
-    const [successMsg, setSuccessMsg] = useState<string>("");
+    const [messageApi, contextHolder] = message.useMessage();
 
     const {
         control,
@@ -28,14 +27,10 @@ const Form = () => {
     });
     const { register, isPending } = useRegister();
 
-
     const onSubmit = (data: RegisterPayload) => {
-        setGeneralError("");
-        setSuccessMsg("");
-
         register(data, {
             onSuccess: (response) => {
-                setSuccessMsg(response?.message || "Account created successfully!");
+                messageApi.success(response?.message || "Account created successfully!");
                 router.push("/dashboard");
             },
             onError: (error) => {
@@ -50,7 +45,7 @@ const Form = () => {
                         });
                     });
                 } else {
-                    setGeneralError(responseData?.message || "Something went wrong");
+                    messageApi.error(responseData?.message || "Something went wrong");
                 }
             }
         });
@@ -58,21 +53,7 @@ const Form = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            {/* Success Notification */}
-            {successMsg && (
-                <div className="bg-[#22c55e] border-2 border-black p-3 font-bold text-xs text-white shadow-[2px_2px_0px_#000] flex items-center gap-2">
-                    <FiCheck className="text-base" />
-                    <span>{successMsg} Redirecting to dashboard...</span>
-                </div>
-            )}
-
-            {/* General Server Error */}
-            {generalError && (
-                <div className="bg-[#fb7185] border-2 border-black p-3 font-bold text-xs text-black shadow-[2px_2px_0px_#000] flex items-center gap-2">
-                    <FiAlertCircle className="text-base" />
-                    <span>{generalError}</span>
-                </div>
-            )}
+            {contextHolder}
 
             {/* Full Name Field */}
             <CommonFieldset

@@ -1,25 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { FiMail, FiLock, FiAlertCircle, FiCheck } from "react-icons/fi";
+import { FiMail, FiLock } from "react-icons/fi";
+import { message } from "antd";
 import CommonFieldset from "@/components/fieldset";
-import { LoginInput } from "@/types";
-import api from "@/lib/axios";
-import axios from "axios";
+import { LoginPayload } from "@/types";
+import { useLogin } from "@/hooks/login.hook";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<LoginInput>({
+  } = useForm<LoginPayload>({
     defaultValues: {
       email: "",
       password: "",
@@ -27,44 +26,35 @@ export default function LoginForm() {
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: LoginInput) => {
-    try {
-      setLoading(true);
-      setErrorMsg("");
-      const res = await api.post("/auth/login", data);
-      if (res.data?.success) {
-        setSuccessMsg("Logged in successfully! Redirecting...");
-        setTimeout(() => {
-          router.push("/dashboard");
-          router.refresh();
-        }, 1000);
-      }
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        setErrorMsg(err.response?.data?.error || err.response?.data?.message || "Invalid credentials");
-      } else {
-        setErrorMsg("Failed to log in");
-      }
-    } finally {
-      setLoading(false);
-    }
+  const { login, isPending } = useLogin();
+
+  const onSubmit = (data: LoginPayload) => {
+    login(data, {
+      onSuccess: (response) => {
+        messageApi.success(response?.message || "Logged in successfully!");
+        router.push("/dashboard");
+      },
+      onError: (error) => {
+        const responseData = error.response?.data;
+        const errorData = responseData?.errors;
+
+        if (errorData && errorData.length > 0) {
+          errorData.forEach((err) => {
+            setError(err.field as keyof LoginPayload, {
+              type: "server",
+              message: err.message,
+            });
+          });
+        } else {
+          messageApi.error(responseData?.message || "Invalid email or password");
+        }
+      },
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      {successMsg && (
-        <div className="bg-[#22c55e] border-[2px] border-black p-3 font-bold text-xs text-white shadow-[2px_2px_0px_#000] flex items-center gap-2">
-          <FiCheck className="text-base" />
-          <span>{successMsg}</span>
-        </div>
-      )}
-
-      {errorMsg && (
-        <div className="bg-[#fb7185] border-[2px] border-black p-3 font-bold text-xs text-black shadow-[2px_2px_0px_#000] flex items-center gap-2">
-          <FiAlertCircle className="text-base" />
-          <span>{errorMsg}</span>
-        </div>
-      )}
+      {contextHolder}
 
       {/* Email */}
       <CommonFieldset
@@ -83,6 +73,9 @@ export default function LoginForm() {
             message: "Invalid email address",
           },
         }}
+        innerWrapper="border-2 border-black rounded-none shadow-[2px_2px_0px_#000] focus-within:ring-0 focus-within:border-black"
+        labelClass="font-black uppercase text-xs"
+        inputClass="font-bold text-sm"
       />
 
       {/* Password */}
@@ -98,14 +91,18 @@ export default function LoginForm() {
         validationRules={{
           required: "Password is required",
         }}
+        innerWrapper="border-2 border-black rounded-none shadow-[2px_2px_0px_#000] focus-within:ring-0 focus-within:border-black"
+        labelClass="font-black uppercase text-xs"
+        inputClass="font-bold text-sm"
       />
 
+      {/* Submit Button */}
       <button
         type="submit"
-        disabled={loading}
-        className="w-full bg-[#facc15] border-[2.5px] border-black py-2.5 font-black text-sm uppercase shadow-[3px_3px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 mt-2 cursor-pointer transition-all disabled:opacity-60"
+        disabled={isPending}
+        className="w-full bg-[#facc15] border-[2.5px] border-black py-2.5 font-black text-sm uppercase shadow-[3px_3px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none mt-2 cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {loading ? "SIGNING IN..." : "SIGN IN"}
+        {isPending ? "SIGNING IN..." : "SIGN IN"}
       </button>
     </form>
   );

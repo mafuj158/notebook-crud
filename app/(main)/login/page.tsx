@@ -13,7 +13,7 @@ export default function LoginPage() {
 
         <LoginForm />
 
-        <div className="mt-6 pt-4 border-t-[2px] border-zinc-200 text-center text-xs font-bold">
+        <div className="mt-6 pt-4 border-t-2 border-zinc-200 text-center text-xs font-bold">
           <span>Don&apos;t have an account? </span>
           <Link href="/register" className="underline font-black text-black hover:text-zinc-700">
             REGISTER HERE
