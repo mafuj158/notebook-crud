@@ -10,18 +10,8 @@ export interface UserWithPassword extends User {
   password: string;
 }
 
-export interface RegisterInput {
-  name: string;
-  email: string;
-  password: string;
-}
-
 export interface LoginInput {
   email: string;
   password: string;
 }
 
-export interface AuthResponseData {
-  token: string;
-  user: User;
-}

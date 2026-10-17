@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RegisterInput, ValidationErrorItem } from "@/types";
+import { RegisterPayload, ValidationErrorItem } from "@/types";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   try {
 
-    const body = (await request.json().catch(() => null)) as RegisterInput | null;
+    const body = (await request.json().catch(() => null)) as RegisterPayload | null;
     if (!body || typeof body !== "object") {
       return NextResponse.json(
         { success: false, message: "Invalid request payload", status: 400 },

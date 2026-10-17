@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheck } from "react-icons/fi";
 import CommonFieldset from "@/components/fieldset";
-import { RegisterInput } from "@/types";
+import { RegisterPayload } from "@/types";
 import { useRegister } from "@/hooks/register.hook";
 
 const Form = () => {
@@ -18,7 +18,7 @@ const Form = () => {
         handleSubmit,
         setError,
         formState: { errors },
-    } = useForm<RegisterInput>({
+    } = useForm<RegisterPayload>({
         defaultValues: {
             name: "",
             email: "",
@@ -29,15 +29,29 @@ const Form = () => {
     const { register, isPending } = useRegister();
 
 
-    const onSubmit = (data: RegisterInput) => {
+    const onSubmit = (data: RegisterPayload) => {
         setGeneralError("");
         setSuccessMsg("");
+
         register(data, {
             onSuccess: (response) => {
-                console.log("response", response)
+                setSuccessMsg(response?.message || "Account created successfully!");
+                router.push("/dashboard");
             },
             onError: (error) => {
-                console.log("error", error)
+                const responseData = error.response?.data;
+                const errorData = responseData?.errors;
+
+                if (errorData && errorData.length > 0) {
+                    errorData.forEach((err) => {
+                        setError(err.field as keyof RegisterPayload, {
+                            type: "server",
+                            message: err.message,
+                        });
+                    });
+                } else {
+                    setGeneralError(responseData?.message || "Something went wrong");
+                }
             }
         });
     };

@@ -1,7 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa6";
-import { Select, DatePicker, TimePicker } from "antd";
+import dynamic from "next/dynamic";
+
+const Select = dynamic<any>(() => import("antd").then((mod) => mod.Select), {
+  ssr: false,
+});
+const DatePicker = dynamic<any>(() => import("antd").then((mod) => mod.DatePicker), {
+  ssr: false,
+});
+const TimePicker = dynamic<any>(() => import("antd").then((mod) => mod.TimePicker), {
+  ssr: false,
+});
 import {
   Controller,
   FieldValues,
@@ -192,7 +202,7 @@ const CommonFieldset = <T extends FieldValues>({
                       ? undefined
                       : normalizeValue(field.value)
                   }
-                  onChange={(val, option) => {
+                  onChange={(val: any, option: any) => {
                     if (selectMode !== "single") {
                       field.onChange(val ?? []);
                     } else {
@@ -233,7 +243,7 @@ const CommonFieldset = <T extends FieldValues>({
                     value={
                       field.value ? dayjs(field.value, dateFormat) : null
                     }
-                    onChange={(date) =>
+                    onChange={(date: any) =>
                       field.onChange(
                         date ? date.format(dateFormat) : null
                       )
@@ -260,7 +270,7 @@ const CommonFieldset = <T extends FieldValues>({
                   disabled={disabled}
                   format="HH:mm"
                   value={field.value ? dayjs(field.value, "HH:mm") : null}
-                  onChange={(time) =>
+                  onChange={(time: any) =>
                     field.onChange(time ? time.format("HH:mm") : null)
                   }
                 />

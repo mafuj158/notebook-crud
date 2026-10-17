@@ -20,18 +20,21 @@ export default function Header() {
         <nav className="flex items-center gap-3">
           <Link
             href="/dashboard"
+            prefetch={true}
             className="hidden sm:inline-block border-[2px] border-black px-4 py-2 font-black text-xs uppercase shadow-[2px_2px_0px_#000] bg-white hover:bg-zinc-100 transition-all"
           >
             DASHBOARD
           </Link>
           <Link
             href="/login"
+            prefetch={true}
             className="bg-white border-[2px] border-black px-4 py-2 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:bg-zinc-100 transition-all"
           >
             LOGIN
           </Link>
           <Link
             href="/register"
+            prefetch={true}
             className="bg-[#facc15] border-[2px] border-black px-4 py-2 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:bg-[#eab308] transition-all"
           >
             REGISTER

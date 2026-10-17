@@ -17,7 +17,7 @@ export default function DashboardLayout({
       {/* LEFT SIDEBAR */}
       <aside className="w-full md:w-80 bg-white border-b-[3px] md:border-b-0 md:border-r-[3px] border-black p-5 flex flex-col gap-6 shrink-0">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2 hover:opacity-90">
+        <Link href="/" prefetch={true} className="flex items-center gap-2 hover:opacity-90">
           <div className="flex items-center gap-1.5 border-[2.5px] border-black px-2.5 py-1.5 bg-white font-black text-xl shadow-[2px_2px_0px_#000]">
             <FiBookOpen className="text-xl" />
             <span>LWS</span>
@@ -33,7 +33,7 @@ export default function DashboardLayout({
             <span className="flex items-center gap-1.5">
               <FiUser className="text-sm" /> USER IDENTITY
             </span>
-            <Link href="/login" title="Logout">
+            <Link href="/login" prefetch={true} title="Logout">
               <FiLogOut className="text-base text-black hover:opacity-75" />
             </Link>
           </div>
@@ -46,6 +46,7 @@ export default function DashboardLayout({
         {/* NEW NOTE BUTTON */}
         <Link
           href="/dashboard/create-note"
+          prefetch={true}
           className="w-full bg-[#22c55e] border-[2.5px] border-black py-3 px-4 font-black text-lg flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
         >
           <FiPlus className="text-2xl stroke-[3]" />

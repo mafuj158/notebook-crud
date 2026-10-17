@@ -1,9 +1,9 @@
 
 
 import { AxiosInstance } from "axios";
-import { RegisterInput } from "@/types";
+import { RegisterPayload } from "@/types";
 
-export const registerService = async (payload: RegisterInput, axiosInstance: AxiosInstance) => {
+export const registerService = async (payload: RegisterPayload, axiosInstance: AxiosInstance) => {
     const response = await axiosInstance.post("/auth/register", payload)
     return response?.data
 };
