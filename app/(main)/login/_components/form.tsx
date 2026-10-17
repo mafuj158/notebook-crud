@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FiMail, FiLock, FiAlertCircle, FiCheck } from "react-icons/fi";
 import CommonFieldset from "@/components/fieldset";
 import { LoginInput } from "@/types";
+import api from "@/lib/axios";
 import axios from "axios";
 
 export default function LoginForm() {
@@ -30,7 +31,7 @@ export default function LoginForm() {
     try {
       setLoading(true);
       setErrorMsg("");
-      const res = await axios.post("/api/auth/login", data);
+      const res = await api.post("/auth/login", data);
       if (res.data?.success) {
         setSuccessMsg("Logged in successfully! Redirecting...");
         setTimeout(() => {
