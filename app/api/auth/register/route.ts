@@ -3,6 +3,7 @@ import { RegisterPayload, ValidationErrorItem } from "@/types";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
+import httpStatus from "http-status";
 
 // Access Token এর জন্য 
 const ACCESS_TOKEN_NAME = process.env.NEXT_PUBLIC_ACCESS_TOKEN_NAME as string;
@@ -12,16 +13,17 @@ const ACCESS_TOKEN_MAX_AGE = Number(process.env.ACCESS_TOKEN_MAX_AGE || 86400);
 const REFRESH_TOKEN_NAME = process.env.NEXT_PUBLIC_REFRESH_TOKEN_NAME as string;
 const REFRESH_TOKEN_MAX_AGE = Number(process.env.REFRESH_TOKEN_MAX_AGE || 604800);
 
-
 export async function POST(request: NextRequest) {
-
   try {
-
     const body = (await request.json().catch(() => null)) as RegisterPayload | null;
     if (!body || typeof body !== "object") {
       return NextResponse.json(
-        { success: false, message: "Invalid request payload", status: 400 },
-        { status: 400 }
+        {
+          success: false,
+          message: "Invalid request payload",
+          status: httpStatus.BAD_REQUEST,
+        },
+        { status: httpStatus.BAD_REQUEST }
       );
     }
 
@@ -64,9 +66,10 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           message: "Validation failed",
-          errors, // e.g. [{ field: "name", message: "..." }, { field: "email", message: "..." }]
+          errors,
+          status: httpStatus.BAD_REQUEST,
         },
-        { status: 400 }
+        { status: httpStatus.BAD_REQUEST }
       );
     }
 
@@ -78,8 +81,13 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       errors.push({ field: "email", message: "Email already exists" });
       return NextResponse.json(
-        { success: false, message: "Validation failed", errors, status: 409 },
-        { status: 409 } // 409 Conflict
+        {
+          success: false,
+          message: "Validation failed",
+          errors,
+          status: httpStatus.CONFLICT,
+        },
+        { status: httpStatus.CONFLICT }
       );
     }
 
@@ -87,7 +95,6 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // ৫. ডেটাবেসে ইউজার তৈরি করা
-
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -98,19 +105,18 @@ export async function POST(request: NextRequest) {
         id: true,
         name: true,
         email: true,
-      }
+      },
     });
 
-    // ৬. টোকেন তৈরি করা (ট্যাকটিক ১: কোনো ডাটাবেজ টেবিল ছাড়াই)
+    // ৬. টোকেন তৈরি করা
     const tokenPayload = {
       userId: newUser.id,
       email: newUser.email,
-    }
+    };
     const access_token = generateAccessToken(tokenPayload);
     const refresh_token = generateRefreshToken(tokenPayload);
 
     // ৭. রেসপন্স তৈরি (মোবাইল অ্যাপের জন্য JSON-এ পাঠানো)
-
     const response = NextResponse.json(
       {
         success: true,
@@ -119,39 +125,39 @@ export async function POST(request: NextRequest) {
           user: newUser,
           tokens: {
             access_token,
-            refresh_token
-          }
+            refresh_token,
+          },
         },
-        status: 201
+        status: httpStatus.CREATED,
       },
-      { status: 201 }
+      { status: httpStatus.CREATED }
     );
 
     // ৮. ব্রাউজারের জন্য httpOnly কুকিতে সেট করা (Web Client-এর জন্য)
-
     response.cookies.set(ACCESS_TOKEN_NAME, access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: ACCESS_TOKEN_MAX_AGE,
-    })
+    });
     response.cookies.set(REFRESH_TOKEN_NAME, refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: REFRESH_TOKEN_MAX_AGE,
-    })
+    });
 
     return response;
-    // Catch 
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: "Internal server error", status: 500 },
-      { status: 500 }
+      {
+        success: false,
+        message: "Internal server error",
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+      },
+      { status: httpStatus.INTERNAL_SERVER_ERROR }
     );
   }
-
-
 }

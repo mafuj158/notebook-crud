@@ -5,6 +5,7 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "@/lib/jwt";
+import httpStatus from "http-status";
 
 const ACCESS_TOKEN_NAME =
   process.env.NEXT_PUBLIC_ACCESS_TOKEN_NAME || "access_token";
@@ -34,8 +35,12 @@ export async function POST(request: NextRequest) {
 
     if (!refreshToken) {
       return NextResponse.json(
-        { success: false, message: "Refresh token is missing", status: 401 },
-        { status: 401 }
+        {
+          success: false,
+          message: "Refresh token is missing",
+          status: httpStatus.UNAUTHORIZED,
+        },
+        { status: httpStatus.UNAUTHORIZED }
       );
     }
 
@@ -45,8 +50,12 @@ export async function POST(request: NextRequest) {
       payload = verifyRefreshToken(refreshToken);
     } catch {
       const response = NextResponse.json(
-        { success: false, message: "Invalid or expired refresh token", status: 401 },
-        { status: 401 }
+        {
+          success: false,
+          message: "Invalid or expired refresh token",
+          status: httpStatus.UNAUTHORIZED,
+        },
+        { status: httpStatus.UNAUTHORIZED }
       );
       // মেয়াদ শেষ হয়ে গেলে ইনভ্যালিড কুকি মুছে ফেলা
       response.cookies.delete(ACCESS_TOKEN_NAME);
@@ -62,8 +71,12 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       const response = NextResponse.json(
-        { success: false, message: "User no longer exists" },
-        { status: 401 }
+        {
+          success: false,
+          message: "User no longer exists",
+          status: httpStatus.UNAUTHORIZED,
+        },
+        { status: httpStatus.UNAUTHORIZED }
       );
       response.cookies.delete(ACCESS_TOKEN_NAME);
       response.cookies.delete(REFRESH_TOKEN_NAME);
@@ -86,9 +99,9 @@ export async function POST(request: NextRequest) {
             refresh_token: newRefreshToken,
           },
         },
-        status: 200,
+        status: httpStatus.OK,
       },
-      { status: 200 }
+      { status: httpStatus.OK }
     );
 
     // ৬. ব্রাউজারের জন্য নতুন httpOnly কুকি সেট করা
@@ -112,8 +125,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Refresh token error:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to refresh token" },
-      { status: 500 }
+      {
+        success: false,
+        message: "Failed to refresh token",
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+      },
+      { status: httpStatus.INTERNAL_SERVER_ERROR }
     );
   }
 }
