@@ -56,31 +56,88 @@ const INITIAL_NOTES = [
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState("ALL");
 
-  const filteredNotes = INITIAL_NOTES.filter(
-    (n) =>
+  const TAGS = [
+    { label: "ALL", count: INITIAL_NOTES.length },
+    {
+      label: "DATABASE",
+      count: INITIAL_NOTES.filter((n) => n.tags.some((t) => t.label === "DATABASE")).length,
+    },
+    {
+      label: "PRISMA",
+      count: INITIAL_NOTES.filter((n) => n.tags.some((t) => t.label === "PRISMA")).length,
+    },
+    {
+      label: "MIGRATION",
+      count: INITIAL_NOTES.filter((n) => n.tags.some((t) => t.label === "MIGRATION")).length,
+    },
+    {
+      label: "FRONTEND",
+      count: INITIAL_NOTES.filter((n) => n.tags.some((t) => t.label === "FRONTEND")).length,
+    },
+    {
+      label: "PERFORMANCE",
+      count: INITIAL_NOTES.filter((n) => n.tags.some((t) => t.label === "PERFORMANCE")).length,
+    },
+  ];
+
+  const filteredNotes = INITIAL_NOTES.filter((n) => {
+    const matchesSearch =
       n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      n.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      n.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTag =
+      selectedTag === "ALL" || n.tags.some((t) => t.label === selectedTag);
+    return matchesSearch && matchesTag;
+  });
 
   return (
     <>
-      {/* TOP SEARCH BAR */}
-      <div className="relative w-full">
-        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <FiSearch className="text-2xl text-black stroke-[3]" />
+      {/* TOP SEARCH & TAG FILTER CONTROLS */}
+      <div className="flex flex-col gap-4 w-full">
+        {/* SEARCH BAR */}
+        <div className="relative w-full">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <FiSearch className="text-2xl text-black stroke-3" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search notes by title or content..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white border-[3px] border-black pl-12 pr-4 py-3.5 font-bold text-base shadow-[4px_4px_0px_#000] focus:outline-none placeholder:text-zinc-500 placeholder:font-medium"
+          />
         </div>
-        <input
-          type="text"
-          placeholder="Search notes by title or content..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-white border-[3px] border-black pl-12 pr-4 py-3.5 font-bold text-base shadow-[4px_4px_0px_#000] focus:outline-none placeholder:text-zinc-500 placeholder:font-medium"
-        />
+
+        {/* TAG FILTER CHIPS */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {TAGS.map((tag) => {
+            const isActive = selectedTag === tag.label;
+            return (
+              <button
+                type="button"
+                key={tag.label}
+                onClick={() => setSelectedTag(tag.label)}
+                className={`px-3 py-1.5 border-[2px] border-black text-xs font-black uppercase flex items-center gap-2 shadow-[2px_2px_0px_#000] transition-all cursor-pointer shrink-0 ${isActive
+                    ? "bg-black text-white translate-x-0.5 translate-y-0.5 shadow-none"
+                    : "bg-white text-black hover:bg-zinc-100"
+                  }`}
+              >
+                <span>{tag.label === "ALL" ? "ALL NOTES" : `# ${tag.label}`}</span>
+                <span
+                  className={`px-1.5 py-0.5 text-[10px] font-black border border-black ${isActive ? "bg-zinc-800 text-white" : "bg-zinc-100 text-black"
+                    }`}
+                >
+                  {tag.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* NOTES GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start w-full">
         {filteredNotes.map((note) => (
           <div
             key={note.id}

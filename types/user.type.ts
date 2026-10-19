@@ -10,8 +10,19 @@ export interface UserWithPassword extends User {
   password: string;
 }
 
-export interface LoginInput {
-  email: string;
-  password: string;
+export interface UserSuccessResponse {
+  success: boolean;
+  message: string;
+  data: { user: User };
+  status: number;
 }
+
+export interface UserErrorResponse {
+  success: boolean;
+  message: string;
+  error: string;
+  status: number;
+}
+
+
 
