@@ -16,8 +16,8 @@ export default function DashboardHeader() {
   const [loggingOut, setLoggingOut] = useState(false);
   const { user } = useUser();
 
-  const userName = user?.data?.user?.name || "Sumit Saha";
-  const userEmail = user?.data?.user?.email || "sumit@learnwithsumit.com";
+  const userName = user?.data?.user?.name || "User";
+  const userEmail = user?.data?.user?.email || "user@example.com";
 
   const handleLogout = async () => {
     try {
@@ -39,12 +39,9 @@ export default function DashboardHeader() {
       <div className="container flex items-center justify-between">
         {/* BRAND LOGO */}
         <Link href="/" prefetch={true} className="flex items-center gap-2 hover:opacity-90 shrink-0">
-          <div className="flex items-center gap-1.5 border-[2.5px] border-black px-2.5 py-1 bg-white font-black text-lg sm:text-xl shadow-[2px_2px_0px_#000]">
-            <FiBookOpen className="text-lg sm:text-xl" />
-            <span>LWS</span>
-          </div>
-          <div className="bg-[#facc15] border-[2.5px] border-black px-3 py-1 font-black text-lg sm:text-xl shadow-[2px_2px_0px_#000]">
-            NOTEBOOK
+          <div className="flex items-center gap-2 bg-[#facc15] border-[2.5px] border-black px-3.5 py-1.5 font-black text-lg sm:text-xl shadow-[2px_2px_0px_#000]">
+            <FiBookOpen className="text-xl stroke-[2.5]" />
+            <span>NOTEBOOK</span>
           </div>
         </Link>
 

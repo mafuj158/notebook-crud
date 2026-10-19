@@ -13,7 +13,7 @@ export default function Loading() {
         {/* Title */}
         <div className="flex flex-col gap-1">
           <div className="font-black text-xl tracking-tight uppercase">
-            LWS NOTEBOOK
+            NOTEBOOK
           </div>
           <div className="text-xs font-bold text-zinc-600 tracking-wider">
             PREPARING CONTENT...

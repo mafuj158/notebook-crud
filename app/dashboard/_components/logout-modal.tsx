@@ -45,7 +45,7 @@ export default function LogoutModal({
     >
       <div className="font-mono py-3 text-zinc-700 font-bold text-sm leading-relaxed">
         Are you sure you want to log out of your{" "}
-        <span className="font-black text-black">LWS Notebook</span> account? You will need to log back in to access your notes.
+        <span className="font-black text-black">Notebook</span> account? You will need to log back in to access your notes.
       </div>
     </Modal>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { FiBookOpen, FiExternalLink } from "react-icons/fi";
+import { FiBookOpen } from "react-icons/fi";
 
 export default function DashboardFooter() {
   return (
@@ -8,17 +8,12 @@ export default function DashboardFooter() {
       <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-zinc-700">
         {/* BRAND & COPYRIGHT */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1">
-            <span className="border-2 border-black px-2 py-0.5 bg-white font-black text-xs shadow-[1.5px_1.5px_0px_#000] flex items-center gap-1">
-              <FiBookOpen className="text-xs" />
-              LWS
-            </span>
-            <span className="bg-[#facc15] border-2 border-black px-2 py-0.5 font-black text-xs shadow-[1.5px_1.5px_0px_#000]">
-              NOTEBOOK
-            </span>
-          </div>
+          <span className="bg-[#facc15] border-2 border-black px-2.5 py-0.5 font-black text-xs shadow-[1.5px_1.5px_0px_#000] flex items-center gap-1.5">
+            <FiBookOpen className="text-xs stroke-[2.5]" />
+            NOTEBOOK
+          </span>
           <span className="text-[11px] text-zinc-500 font-semibold sm:ml-2">
-            © 2026 LEARN WITH SUMIT. ALL RIGHTS RESERVED.
+            © 2026 NOTEBOOK. ALL RIGHTS RESERVED.
           </span>
         </div>
 
@@ -43,15 +38,12 @@ export default function DashboardFooter() {
             CREATE NOTE
           </Link>
 
-          <a
-            href="https://learnwithsumit.com"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/dashboard"
             className="hover:text-black hover:underline underline-offset-4 flex items-center gap-1"
           >
-            <span>LWS PLATFORM</span>
-            <FiExternalLink className="text-[11px]" />
-          </a>
+            <span>DOCUMENTATION</span>
+          </Link>
         </div>
       </div>
     </footer>

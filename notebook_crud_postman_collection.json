@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
-    "name": "LWS Notebook CRUD API",
-    "description": "Complete Postman API Collection for LWS Notebook CRUD application with automated JWT token handling.",
+    "name": "Notebook CRUD API",
+    "description": "Complete Postman API Collection for Notebook CRUD application with automated JWT token handling.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [

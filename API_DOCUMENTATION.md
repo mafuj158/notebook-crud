@@ -1,4 +1,4 @@
-# LWS Notebook - REST API Documentation (For Mobile & Web Developers)
+# Notebook - REST API Documentation (For Mobile & Web Developers)
 
 This REST API is designed for cross-platform integration (**Web** and **Mobile App**).
 

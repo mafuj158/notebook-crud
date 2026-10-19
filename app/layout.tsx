@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LWS Notebook",
+  title: "Notebook",
   description: "A developer-first notebook app",
 };
 
