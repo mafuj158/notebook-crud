@@ -6,6 +6,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  
-  console 
+  // TODO: Implement create note
+  return NextResponse.json({ message: "Create note route" });
 }
