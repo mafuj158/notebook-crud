@@ -135,6 +135,4 @@ api.interceptors.response.use(
   }
 );
 
-export const axiosPublic = api;
-export const axiosClient = api;
 export default api;

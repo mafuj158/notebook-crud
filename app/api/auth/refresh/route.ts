@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     if (!refreshToken) {
       return NextResponse.json(
-        { success: false, message: "Refresh token is missing" },
+        { success: false, message: "Refresh token is missing", status: 401 },
         { status: 401 }
       );
     }
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       payload = verifyRefreshToken(refreshToken);
     } catch {
       const response = NextResponse.json(
-        { success: false, message: "Invalid or expired refresh token" },
+        { success: false, message: "Invalid or expired refresh token", status: 401 },
         { status: 401 }
       );
       // মেয়াদ শেষ হয়ে গেলে ইনভ্যালিড কুকি মুছে ফেলা
@@ -86,6 +86,7 @@ export async function POST(request: NextRequest) {
             refresh_token: newRefreshToken,
           },
         },
+        status: 200,
       },
       { status: 200 }
     );

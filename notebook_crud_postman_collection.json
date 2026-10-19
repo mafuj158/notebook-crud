@@ -1,0 +1,375 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "name": "LWS Notebook CRUD API",
+    "description": "Complete Postman API Collection for LWS Notebook CRUD application with automated JWT token handling.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.collectionVariables.set('access_token', json.data.tokens.access_token);",
+                  "        pm.collectionVariables.set('refresh_token', json.data.tokens.refresh_token);",
+                  "        console.log('Tokens saved automatically!');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sumit Saha\",\n  \"email\": \"sumit@learnwithsumit.com\",\n  \"password\": \"secret123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registers a new user and automatically stores access_token and refresh_token in collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.collectionVariables.set('access_token', json.data.tokens.access_token);",
+                  "        pm.collectionVariables.set('refresh_token', json.data.tokens.refresh_token);",
+                  "        console.log('Login tokens saved automatically!');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sumit@learnwithsumit.com\",\n  \"password\": \"secret123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Authenticates a user and automatically stores access_token and refresh_token in collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Fetches current logged in user profile using the Bearer token or httpOnly cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.tokens) {",
+                  "        pm.collectionVariables.set('access_token', json.data.tokens.access_token);",
+                  "        pm.collectionVariables.set('refresh_token', json.data.tokens.refresh_token);",
+                  "        console.log('Refreshed tokens updated!');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh"]
+            },
+            "description": "Uses refresh token to generate and store new access and refresh tokens."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('access_token', '');",
+                  "pm.collectionVariables.set('refresh_token', '');",
+                  "console.log('Local tokens cleared!');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Clears httpOnly authentication cookies on server and clears tokens in Postman variables."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Notes CRUD",
+      "item": [
+        {
+          "name": "Get All Notes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"],
+              "query": [
+                {
+                  "key": "tag",
+                  "value": "frontend",
+                  "description": "Filter by tag (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "hydration",
+                  "description": "Search notes by title/content (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Fetches list of notes belonging to the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Resolve Hydration Mismatches in Layouts\",\n  \"content\": \"Avoid layouts rendering mismatched markup by checking window state before calling browser storage APIs.\",\n  \"tags\": [\"frontend\", \"nextjs\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Creates a new note for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Note By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "YOUR_NOTE_ID_HERE",
+                  "description": "MongoDB ObjectID of the note"
+                }
+              ]
+            },
+            "description": "Fetches single note details by its MongoDB ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Note By ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Note Title\",\n  \"content\": \"Updated note body content with new instructions.\",\n  \"tags\": [\"frontend\", \"updated\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "YOUR_NOTE_ID_HERE"
+                }
+              ]
+            },
+            "description": "Updates an existing note belonging to the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Note By ID",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "YOUR_NOTE_ID_HERE"
+                }
+              ]
+            },
+            "description": "Deletes a note belonging to the authenticated user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Health & System",
+      "item": [
+        {
+          "name": "Database Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Pings the MongoDB database connection to verify backend health."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
