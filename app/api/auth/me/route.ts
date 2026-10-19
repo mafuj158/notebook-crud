@@ -80,10 +80,12 @@ export async function GET(request: NextRequest) {
       { status: httpStatus.OK }
     );
   } catch (error) {
+    console.error("Error in GET /api/auth/me:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Failed to fetch user",
+        error: error instanceof Error ? error.message : "Internal Server Error",
         status: httpStatus.INTERNAL_SERVER_ERROR,
       },
       { status: httpStatus.INTERNAL_SERVER_ERROR }

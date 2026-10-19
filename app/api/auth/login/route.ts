@@ -128,9 +128,9 @@ export async function POST(request: NextRequest) {
       { status: httpStatus.OK }
     );
 
-    // ৭. Browser এর জন্য httpOnly কুকিতে সেট করা (Web Client এর জন্য)
+    // ৭. Browser এর জন্য কুকিতে সেট করা (Web Client এর জন্য)
     response.cookies.set(ACCESS_TOKEN_NAME, access_token, {
-      httpOnly: true,
+      httpOnly: false, // Accessible to client-side JS so hooks can check cookie presence
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",

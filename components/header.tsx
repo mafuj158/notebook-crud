@@ -6,7 +6,6 @@ import { FiBookOpen } from "react-icons/fi";
 
 export default function Header() {
 
-
   // hook 
   const { user, isLoading } = useUser();
 

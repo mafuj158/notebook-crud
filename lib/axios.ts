@@ -77,8 +77,13 @@ api.interceptors.response.use(
       if (originalRequest._retry) {
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
-          if (!currentPath.startsWith("/login") && !currentPath.startsWith("/register")) {
-            window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+          const isMeRequest = requestUrl.includes("/auth/me");
+          const isPublicPage = !currentPath.startsWith("/dashboard");
+
+          if (!(isMeRequest && isPublicPage)) {
+            if (!currentPath.startsWith("/login") && !currentPath.startsWith("/register")) {
+              window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+            }
           }
         }
         return Promise.reject(error);
@@ -120,8 +125,13 @@ api.interceptors.response.use(
 
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
-          if (!currentPath.startsWith("/login") && !currentPath.startsWith("/register")) {
-            window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+          const isMeRequest = requestUrl.includes("/auth/me");
+          const isPublicPage = !currentPath.startsWith("/dashboard");
+
+          if (!(isMeRequest && isPublicPage)) {
+            if (!currentPath.startsWith("/login") && !currentPath.startsWith("/register")) {
+              window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+            }
           }
         }
 
