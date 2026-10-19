@@ -104,9 +104,9 @@ export async function POST(request: NextRequest) {
       { status: httpStatus.OK }
     );
 
-    // ৬. ব্রাউজারের জন্য নতুন httpOnly কুকি সেট করা
+    // ৬. ব্রাউজারের জন্য নতুন কুকি সেট করা
     response.cookies.set(ACCESS_TOKEN_NAME, newAccessToken, {
-      httpOnly: true,
+      httpOnly: false, // Accessible to client-side JS so hooks can check cookie presence
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
