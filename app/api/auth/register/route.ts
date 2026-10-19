@@ -6,12 +6,18 @@ import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 import httpStatus from "http-status";
 
 // Access Token এর জন্য 
-const ACCESS_TOKEN_NAME = process.env.NEXT_PUBLIC_ACCESS_TOKEN_NAME as string;
-const ACCESS_TOKEN_MAX_AGE = Number(process.env.ACCESS_TOKEN_MAX_AGE || 86400);
+const ACCESS_TOKEN_NAME =
+  process.env.NEXT_PUBLIC_ACCESS_TOKEN_NAME || "access_token";
+const ACCESS_TOKEN_MAX_AGE = Number(
+  process.env.ACCESS_TOKEN_MAX_AGE || 86400
+);
 
 // Refresh Token এর জন্য
-const REFRESH_TOKEN_NAME = process.env.NEXT_PUBLIC_REFRESH_TOKEN_NAME as string;
-const REFRESH_TOKEN_MAX_AGE = Number(process.env.REFRESH_TOKEN_MAX_AGE || 604800);
+const REFRESH_TOKEN_NAME =
+  process.env.NEXT_PUBLIC_REFRESH_TOKEN_NAME || "refresh_token";
+const REFRESH_TOKEN_MAX_AGE = Number(
+  process.env.REFRESH_TOKEN_MAX_AGE || 604800
+);
 
 export async function POST(request: NextRequest) {
   try {
@@ -151,10 +157,12 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    console.error("Registration error:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Internal server error",
+        error: error instanceof Error ? error.message : "Unknown error",
         status: httpStatus.INTERNAL_SERVER_ERROR,
       },
       { status: httpStatus.INTERNAL_SERVER_ERROR }
