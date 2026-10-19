@@ -34,7 +34,6 @@ export async function GET(request: NextRequest) {
     let payload;
     try {
       payload = verifyAccessToken(token);
-      console.log("payload", payload);
     } catch {
       return NextResponse.json(
         {

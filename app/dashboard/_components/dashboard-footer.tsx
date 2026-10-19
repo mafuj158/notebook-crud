@@ -4,8 +4,8 @@ import { FiBookOpen, FiExternalLink } from "react-icons/fi";
 
 export default function DashboardFooter() {
   return (
-    <footer className="w-full bg-white border-t-[3px] border-black mt-auto">
-      <div className="container px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-zinc-700">
+    <footer className="w-full bg-white border-t-[3px] border-black">
+      <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-zinc-700">
         {/* BRAND & COPYRIGHT */}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1">

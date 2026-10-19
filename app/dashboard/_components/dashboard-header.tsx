@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiBookOpen, FiUser, FiLogOut, FiPlus } from "react-icons/fi";
+import { useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/user.hook";
+import LogoutModal from "./logout-modal";
 
 export default function DashboardHeader() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const { user } = useUser();
 
@@ -19,12 +23,14 @@ export default function DashboardHeader() {
     try {
       setLoggingOut(true);
       await api.post("/auth/logout");
+      queryClient.clear();
+      setIsModalOpen(false);
+      router.push("/login");
+      router.refresh();
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
       setLoggingOut(false);
-      router.push("/login");
-      router.refresh();
     }
   };
 
@@ -48,22 +54,22 @@ export default function DashboardHeader() {
           <Link
             href="/dashboard/create-note"
             prefetch={true}
-            className="h-11 bg-[#22c55e] border-[2px] border-black px-3.5 sm:px-4 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            className="h-11 bg-[#22c55e] border-2 border-black px-3.5 sm:px-4 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <FiPlus className="text-base sm:text-lg stroke-[3]" />
+            <FiPlus className="text-base sm:text-lg stroke-3" />
             <span className="hidden sm:inline">NEW NOTE</span>
           </Link>
 
           {/* USER IDENTITY BADGE */}
-          <div className="h-11 bg-[#00e5ff] border-[2px] border-black px-3 sm:px-3.5 shadow-[2px_2px_0px_#000] flex items-center gap-2 sm:gap-2.5">
+          <div className="h-11 bg-[#00e5ff] border-2 border-black px-3 sm:px-3.5 shadow-[2px_2px_0px_#000] flex items-center gap-2 sm:gap-2.5">
             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white border-[1.5px] border-black flex items-center justify-center font-black text-sm shrink-0">
               <FiUser className="text-sm sm:text-base text-black" />
             </div>
             <div className="flex flex-col text-left justify-center">
-              <span className="font-black text-xs sm:text-sm leading-tight truncate max-w-[100px] sm:max-w-[160px]">
+              <span className="font-black text-xs sm:text-sm leading-tight truncate max-w-25 sm:max-w-40">
                 {userName}
               </span>
-              <span className="text-[10px] sm:text-[11px] text-zinc-900 font-medium leading-tight truncate max-w-[100px] sm:max-w-[160px]">
+              <span className="text-[10px] sm:text-[11px] text-zinc-900 font-medium leading-tight truncate max-w-25 sm:max-w-40">
                 {userEmail}
               </span>
             </div>
@@ -72,18 +78,23 @@ export default function DashboardHeader() {
           {/* LOGOUT BUTTON */}
           <button
             type="button"
-            onClick={handleLogout}
-            disabled={loggingOut}
+            onClick={() => setIsModalOpen(true)}
             title="Logout"
-            className="h-11 bg-[#fb7185] border-[2px] border-black px-3 sm:px-4 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:bg-[#f43f5e] hover:text-white flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="h-11 bg-[#fb7185] border-2 border-black px-3 sm:px-4 font-black text-xs uppercase shadow-[2px_2px_0px_#000] hover:bg-[#f43f5e] hover:text-white flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
             <FiLogOut className="text-base stroke-[2.5]" />
-            <span className="hidden md:inline">
-              {loggingOut ? "LOGGING OUT..." : "LOGOUT"}
-            </span>
+            <span className="hidden md:inline">LOGOUT</span>
           </button>
         </div>
       </div>
+
+      {/* ANTD LOGOUT CONFIRMATION MODAL */}
+      <LogoutModal
+        open={isModalOpen}
+        onConfirm={handleLogout}
+        onCancel={() => setIsModalOpen(false)}
+        loading={loggingOut}
+      />
     </header>
   );
 }

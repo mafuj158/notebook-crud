@@ -64,10 +64,10 @@ export default function CreateNotePage() {
   };
 
   return (
-    <div className="max-w-2xl">
+    <div className="w-full">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 font-bold text-xs uppercase shadow-[2px_2px_0px_#000] mb-6 hover:bg-zinc-100 transition-all"
+        className="inline-flex items-center gap-2 border-2 border-black bg-white px-3 py-1.5 font-bold text-xs uppercase shadow-[2px_2px_0px_#000] mb-6 hover:bg-zinc-100 transition-all"
       >
         <FiArrowLeft /> Back to Dashboard
       </Link>
@@ -79,7 +79,7 @@ export default function CreateNotePage() {
         </p>
 
         {errorMsg && (
-          <div className="bg-[#fb7185] border-[2px] border-black p-3 font-bold text-xs text-black shadow-[2px_2px_0px_#000] mb-4">
+          <div className="bg-[#fb7185] border-2 border-black p-3 font-bold text-xs text-black shadow-[2px_2px_0px_#000] mb-4">
             {errorMsg}
           </div>
         )}
@@ -118,7 +118,7 @@ export default function CreateNotePage() {
             type="textarea"
             label="Note Content"
             placeholder="Write note documentation or code explanation..."
-            icon={<FiFileText className="text-zinc-600 text-base self-start mt-1" />}
+
             errors={errors}
             isRequired
             validationRules={{
